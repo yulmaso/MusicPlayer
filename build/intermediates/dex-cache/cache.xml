@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="true"
+        jar="/home/tim10011001/conductor/MusicPlayer/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="510aa6efc159983dfbffa676a0dae37568c0a46f">
+        <dex dex="/home/tim10011001/conductor/MusicPlayer/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run_5a9b6160ea1c83ea4780e377bce97b1f813cc688/classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="/home/tim10011001/conductor/MusicPlayer/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="25.0.2"
+        sha1="6661012e84871ea31f6aa9e304f7d28448b6a90a">
+        <dex dex="/home/tim10011001/conductor/MusicPlayer/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_4f50aa765fc546427c71312988068ec972e1530c/classes.dex" />
+    </item>
+
+</items>

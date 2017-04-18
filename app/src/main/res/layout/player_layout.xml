@@ -46,6 +46,7 @@
             android:layout_height="96dp"
             android:src="@drawable/ic_play_arrow_black_24dp"
             android:contentDescription="@string/play_bt"
+            android:onClick="onPlayPressed"
             />
 
         <ImageButton
@@ -55,7 +56,8 @@
             android:layout_height="96dp"
             android:src="@drawable/ic_pause_black_24dp"
             android:contentDescription="@string/pause_track"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            android:onClick="onPausePressed"/>
 
         <ImageButton
             android:id="@+id/next"
