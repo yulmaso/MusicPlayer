@@ -10,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tim10011001.untitled.R;
 import com.tim10011001.untitled.data.models.Track;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -43,7 +46,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
 
     @Override
     public TrackHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layout = LayoutInflater.from(parent.getContext())
+        final View layout = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.track_holder, parent, false);
 
         unbinder = ButterKnife.bind(this, layout);
@@ -59,11 +62,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
         duration.setText(currentTrack.getDuration());
         Log.d("Info", "onBindViewHolder " + position);
 
-    }
-
-    @OnClick(R.id.cv)
-    public void onPressed(){
-        cv.setBackgroundColor(Color.DKGRAY);
     }
 
 

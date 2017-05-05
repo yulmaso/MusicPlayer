@@ -1,11 +1,17 @@
 package com.tim10011001.untitled.ui.fragments;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,8 +19,16 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tim10011001.untitled.R;
+import com.tim10011001.untitled.data.models.Track;
 import com.tim10011001.untitled.ui.rv.adapter.ListAdapter;
 import com.tim10011001.untitled.utils.TrackGenerator;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +46,7 @@ public class ListFragment extends Fragment {
     private ListAdapter adapter;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
