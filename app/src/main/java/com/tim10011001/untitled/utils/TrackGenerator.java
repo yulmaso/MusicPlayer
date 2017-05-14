@@ -34,7 +34,8 @@ public class TrackGenerator {
                     albums[random.nextInt(4)],
                     authors[random.nextInt(4)],
                     durations[random.nextInt(4)],
-                    Uri.EMPTY
+                    Uri.EMPTY,
+                    null
             );
 
             tracks.add(track);

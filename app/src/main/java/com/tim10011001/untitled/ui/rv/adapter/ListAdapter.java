@@ -14,10 +14,12 @@ import android.widget.Toast;
 
 import com.tim10011001.untitled.R;
 import com.tim10011001.untitled.data.models.Track;
+import com.tim10011001.untitled.interfaces.PlayerBinder;
 
 import org.w3c.dom.Text;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindDrawable;
 import butterknife.BindView;
@@ -31,17 +33,21 @@ import butterknife.Unbinder;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
 
-    private List<Track> tracks;
+    private static List<Track> tracks;
 
     private Unbinder unbinder;
+    private static PlayerBinder binder;
     @BindView(R.id.album_photo) ImageView album;
     @BindView(R.id.track_name) TextView name;
+    @BindView(R.id.artist) TextView artist;
     @BindView(R.id.track_time) TextView duration;
     @BindView(R.id.cv)  CardView cv;
-    @BindDrawable(R.drawable.ic_album_black_24dp) Drawable unknow;
+    @BindDrawable(R.drawable.ic_album_black_24dp) Drawable unknown;
 
-    public ListAdapter(List<Track> tracks){
-        this.tracks = tracks;
+    public ListAdapter(List<Track> tracks, PlayerBinder binder)
+    {
+        ListAdapter.binder = binder;
+        ListAdapter.tracks = tracks;
     }
 
     @Override
@@ -50,19 +56,33 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
                 .inflate(R.layout.track_holder, parent, false);
 
         unbinder = ButterKnife.bind(this, layout);
-
         return new TrackHolder(layout);
     }
 
     @Override
     public void onBindViewHolder(TrackHolder holder, int position) {
         Track currentTrack = tracks.get(position);
-        album.setImageDrawable(unknow);
+        if(currentTrack.getAlbumArt() != null){
+            album.setImageBitmap(currentTrack.getAlbumArt());
+        }else{
+            album.setImageDrawable(unknown);
+        }
         name.setText(currentTrack.getName());
-        duration.setText(currentTrack.getDuration());
+        artist.setText(currentTrack.getAuthor());
+
+        int seconds = Integer.parseInt(currentTrack.getDuration()) % 60;
+        int minutes = seconds / 60;
+        duration.setText(String.format(Locale.ENGLISH, "%d:%d", minutes, seconds));
+//        name.setText(currentTrack.getName());
+//        duration.setText(currentTrack.getDuration());
         Log.d("Info", "onBindViewHolder " + position);
 
     }
+
+    public void setTrack(int position){
+        binder.setTrack(tracks.get(position));
+    }
+
 
 
 
@@ -76,5 +96,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
         TrackHolder(View itemView) {
             super(itemView);
         }
+
     }
 }

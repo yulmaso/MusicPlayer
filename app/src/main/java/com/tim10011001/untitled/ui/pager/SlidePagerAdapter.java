@@ -14,18 +14,25 @@ import com.tim10011001.untitled.ui.fragments.PlayerFragment;
 public class SlidePagerAdapter extends FragmentStatePagerAdapter {
 
     private static final int COUNTER = 2;
+    private PlayerFragment playerFragment;
+    private ListFragment listFragment;
 
-    public SlidePagerAdapter(FragmentManager fm) {
+    public SlidePagerAdapter(FragmentManager fm)
+    {
         super(fm);
+        playerFragment = new PlayerFragment();
+        listFragment = new ListFragment();
+        listFragment.setBinder(playerFragment);
+        playerFragment.setTrackNavigator(listFragment);
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new PlayerFragment();
+                return playerFragment;
             case 1:
-                return new ListFragment();
+                return listFragment;
 
         }
 

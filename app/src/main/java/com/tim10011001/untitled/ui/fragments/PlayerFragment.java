@@ -1,6 +1,7 @@
 package com.tim10011001.untitled.ui.fragments;
 
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,9 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.tim10011001.untitled.R;
+import com.tim10011001.untitled.data.models.Track;
+import com.tim10011001.untitled.interfaces.PlayerBinder;
+import com.tim10011001.untitled.interfaces.TrackNavigator;
 
 
 import butterknife.BindView;
@@ -27,44 +33,35 @@ import butterknife.Unbinder;
  * Created by tim10011001 on 4/18/17.
  */
 
-public class PlayerFragment extends Fragment {
+public class PlayerFragment extends Fragment implements PlayerBinder, SeekBar.OnSeekBarChangeListener {
 
     private Unbinder unbinder;
     private MediaPlayer player;
     private Handler handler = new Handler();
+    private Uri nUri;
+    private TrackNavigator navigator;
+    //private Uri oUri;
     @BindView(R.id.play) ImageButton play;
     @BindView(R.id.pause) ImageButton pause;
     @BindView(R.id.next) ImageButton next;
     @BindView(R.id.previous) ImageButton previous;
     @BindView(R.id.track_progress) SeekBar progress;
+    @BindView(R.id.track_title) TextView title;
+    @BindView(R.id.album_view) ImageView albumView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.player_layout, container, false);
         unbinder = ButterKnife.bind(this, layout);
-        player = MediaPlayer.create(this.getContext(), R.raw.gorillaz);
 
         playAndUpdate.run();
 
-        progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if(fromUser){
-                    player.seekTo(progress * 1000);
-                }
-            }
+        progress.setOnSeekBarChangeListener(this);
+        playAndUpdate.run();
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+        //player = MediaPlayer.create(this.getContext(), oUri);
 
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         return layout;
     }
 
@@ -82,13 +79,28 @@ public class PlayerFragment extends Fragment {
         player = null;
     }
 
+    @OnClick(R.id.next)
+    public void onNextPressed(){
+        navigator.next();
+    }
+
+    @OnClick(R.id.previous)
+    public void onPreviousPressed(){
+        navigator.previous();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @OnClick(R.id.play)
     public void onPlayPressed(){
         play.setVisibility(View.GONE);
         pause.setVisibility(View.VISIBLE);
-        progress.setMax(player.getDuration() / 1000);
 
+        if(player == null){
+            player = MediaPlayer.create(this.getContext(), nUri);
+            //oUri = nUri;
+        }
+
+        progress.setMax(player.getDuration() / 1000);
         Log.d("Duration", String.valueOf(player.getDuration()));
         player.start();
     }
@@ -113,4 +125,38 @@ public class PlayerFragment extends Fragment {
     };
 
 
+    @Override
+    public void setTrack(Track track) {
+        if(player != null){
+            player.release();
+            player = null;
+        }
+
+        this.nUri = track.getTrackUri();
+        title.setText(String.format("%s - %s", track.getAuthor(), track.getName()));
+        albumView.setImageBitmap(track.getAlbumArt());
+        pause.setVisibility(View.GONE);
+        play.setVisibility(View.VISIBLE);
+    }
+
+    public void setTrackNavigator(TrackNavigator navigator){
+        this.navigator = navigator;
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (fromUser) {
+            player.seekTo(progress * 1000);
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
 }

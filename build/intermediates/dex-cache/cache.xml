@@ -52,7 +52,7 @@
         jumboMode="true"
         optimize="true"
         revision="25.0.2"
-        sha1="6661012e84871ea31f6aa9e304f7d28448b6a90a">
+        sha1="9206d29e5274d2dd1cb7b719721e8f2d54b666b8">
         <dex dex="/home/tim10011001/conductor/MusicPlayer/app/build/intermediates/transforms/dex/debug/folders/1000/10000/instant-run-bootstrap_4f50aa765fc546427c71312988068ec972e1530c/classes.dex" />
     </item>
 
