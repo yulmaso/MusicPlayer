@@ -7,4 +7,5 @@ package com.tim10011001.untitled.interfaces;
 public interface TrackNavigator {
     void next();
     void previous();
+    //int getPosition();
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Untitled</string>
+    <string name="app_name">Music</string>
     <string name="f_view_pager">First ViewPager  Swipe right to see next</string>
     <string name="previous_bt">tap to run previous track</string>
     <string name="play_bt">tap to play track</string>

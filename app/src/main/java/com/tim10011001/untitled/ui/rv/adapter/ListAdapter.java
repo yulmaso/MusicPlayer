@@ -1,7 +1,10 @@
 package com.tim10011001.untitled.ui.rv.adapter;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,6 +18,7 @@ import android.widget.Toast;
 import com.tim10011001.untitled.R;
 import com.tim10011001.untitled.data.models.Track;
 import com.tim10011001.untitled.interfaces.PlayerBinder;
+import com.tim10011001.untitled.interfaces.TrackNavigator;
 
 import org.w3c.dom.Text;
 
@@ -34,15 +38,8 @@ import butterknife.Unbinder;
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
 
     private static List<Track> tracks;
-
-    private Unbinder unbinder;
+    private static int position = 0;
     private static PlayerBinder binder;
-    @BindView(R.id.album_photo) ImageView album;
-    @BindView(R.id.track_name) TextView name;
-    @BindView(R.id.artist) TextView artist;
-    @BindView(R.id.track_time) TextView duration;
-    @BindView(R.id.cv)  CardView cv;
-    @BindDrawable(R.drawable.ic_album_black_24dp) Drawable unknown;
 
     public ListAdapter(List<Track> tracks, PlayerBinder binder)
     {
@@ -50,12 +47,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
         ListAdapter.tracks = tracks;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public TrackHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View layout = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.track_holder, parent, false);
 
-        unbinder = ButterKnife.bind(this, layout);
         return new TrackHolder(layout);
     }
 
@@ -63,20 +60,19 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
     public void onBindViewHolder(TrackHolder holder, int position) {
         Track currentTrack = tracks.get(position);
         if(currentTrack.getAlbumArt() != null){
-            album.setImageBitmap(currentTrack.getAlbumArt());
+            holder.album.setImageBitmap(currentTrack.getAlbumArt());
         }else{
-            album.setImageDrawable(unknown);
+            holder.album.setImageDrawable(holder.unknown);
         }
-        name.setText(currentTrack.getName());
-        artist.setText(currentTrack.getAuthor());
+        holder.name.setText(currentTrack.getName());
+        holder.artist.setText(currentTrack.getAuthor());
 
-        int seconds = Integer.parseInt(currentTrack.getDuration()) % 60;
-        int minutes = seconds / 60;
-        duration.setText(String.format(Locale.ENGLISH, "%d:%d", minutes, seconds));
-//        name.setText(currentTrack.getName());
-//        duration.setText(currentTrack.getDuration());
+        int length = Integer.parseInt(currentTrack.getDuration()) / 1000;
+
+        int seconds = length % 60;
+        int minutes = length / 60;
+        holder.duration.setText(String.format(Locale.ENGLISH, "%d:%d", minutes, seconds));
         Log.d("Info", "onBindViewHolder " + position);
-
     }
 
     public void setTrack(int position){
@@ -84,7 +80,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
     }
 
 
-
+    public int getPosition(){
+        return position;
+    }
+    public void setPosition(int position) {ListAdapter.position = position;}
 
     @Override
     public int getItemCount() {
@@ -92,9 +91,29 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.TrackHolder> {
     }
 
     static class TrackHolder extends RecyclerView.ViewHolder{
+        ImageView album;
+        TextView artist;
+        TextView name;
+        TextView duration;
+        Drawable unknown;
 
-        TrackHolder(View itemView) {
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        TrackHolder(final View itemView)
+        {
             super(itemView);
+            album = (ImageView) itemView.findViewById(R.id.album_photo);
+            artist = (TextView) itemView.findViewById(R.id.artist);
+            name = (TextView) itemView.findViewById(R.id.track_name);
+            duration = (TextView) itemView.findViewById(R.id.track_time);
+            unknown = itemView.getResources().getDrawable(R.drawable.albums);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    binder.setTrack(tracks.get(getAdapterPosition()));
+                    position = getAdapterPosition();
+                }
+            });
         }
 
     }

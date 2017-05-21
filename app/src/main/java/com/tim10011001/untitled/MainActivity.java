@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_pager) ViewPager mPager;
     @BindView(R.id.toolbar) Toolbar toolbar;
-    @BindDrawable(R.drawable.ic_menu_black_24dp) Drawable drawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(drawable);
         SlidePagerAdapter adapter = new SlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(adapter);
 

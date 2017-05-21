@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tim10011001.untitled.R;
@@ -65,11 +66,6 @@ public class ListFragment extends Fragment implements TrackNavigator {
 
         rv.setLayoutManager(manager);
         rv.setAdapter(adapter);
-
-        if(adapter.getItemCount() != 0){
-            adapter.setTrack(current);
-        }
-
         return layout;
     }
 
@@ -85,21 +81,25 @@ public class ListFragment extends Fragment implements TrackNavigator {
 
     @Override
     public void next() {
+        current = adapter.getPosition();
         if(current < adapter.getItemCount() - 1){
             current++;
         }else{
             current = 0;
         }
         adapter.setTrack(current);
+        adapter.setPosition(current);
     }
 
     @Override
     public void previous() {
+        adapter.getPosition();
         if(current > 0){
             current--;
         }else{
             current = adapter.getItemCount() - 1;
         }
         adapter.setTrack(current);
+        adapter.setPosition(current);
     }
 }

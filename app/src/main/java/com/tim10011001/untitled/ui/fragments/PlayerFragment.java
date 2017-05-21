@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tim10011001.untitled.R;
 import com.tim10011001.untitled.data.models.Track;
@@ -55,11 +56,11 @@ public class PlayerFragment extends Fragment implements PlayerBinder, SeekBar.On
         ViewGroup layout = (ViewGroup) inflater.inflate(R.layout.player_layout, container, false);
         unbinder = ButterKnife.bind(this, layout);
 
-        playAndUpdate.run();
+       // playAndUpdate.run();
 
         progress.setOnSeekBarChangeListener(this);
-        playAndUpdate.run();
 
+        playAndUpdate.run();
         //player = MediaPlayer.create(this.getContext(), oUri);
 
         return layout;
@@ -68,15 +69,20 @@ public class PlayerFragment extends Fragment implements PlayerBinder, SeekBar.On
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        player.release();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        pause.setVisibility(View.GONE);
+        play.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         player.release();
-        player = null;
     }
 
     @OnClick(R.id.next)
@@ -117,6 +123,10 @@ public class PlayerFragment extends Fragment implements PlayerBinder, SeekBar.On
         @Override
         public void run() {
             if(player != null && player.isPlaying()){
+                if(player.getCurrentPosition() == player.getDuration()){
+                    pause.setVisibility(View.GONE);
+                    play.setVisibility(View.VISIBLE);
+                }
                 int currentPosition = player.getCurrentPosition() / 1000;
                 progress.setProgress(currentPosition);
             }
@@ -134,9 +144,16 @@ public class PlayerFragment extends Fragment implements PlayerBinder, SeekBar.On
 
         this.nUri = track.getTrackUri();
         title.setText(String.format("%s - %s", track.getAuthor(), track.getName()));
-        albumView.setImageBitmap(track.getAlbumArt());
-        pause.setVisibility(View.GONE);
-        play.setVisibility(View.VISIBLE);
+        player = MediaPlayer.create(this.getContext(), nUri);
+        player.start();
+        if(track.getAlbumArt() != null){
+            albumView.setImageBitmap(track.getAlbumArt());
+        }else{
+            albumView.setImageDrawable(getResources().getDrawable(R.drawable.albums));
+        }
+
+        play.setVisibility(View.GONE);
+        pause.setVisibility(View.VISIBLE);
     }
 
     public void setTrackNavigator(TrackNavigator navigator){
